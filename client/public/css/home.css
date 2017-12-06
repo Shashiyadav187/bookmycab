@@ -1,0 +1,44 @@
+ .homepagetaxi .content {
+    position: absolute; 
+    bottom: 0; 
+    background: rgba(0, 0, 0, 0.5); 
+    color: #f1f1f1; 
+    width: 100%; 
+    padding: 20px; 
+}
+
+h1{
+	font-size:  7.5em;
+}
+
+.homepagetaxi {
+    position: relative;
+    margin: 0 auto;
+}
+
+.content button{
+	background-color: #f7b731;
+	border-radius: 0;
+	right: 0px;
+}
+
+body {
+    font-size: 100%;
+}
+.thirdsection {
+	text-align: center;
+
+}
+
+
+p{
+	font-size: 2.0em;
+	text-align: justify;
+}
+ .fourth,.table>tbody>tr>td,.table>tbody>tr>th {
+ 	background-color: grey;
+ 	color:white;
+ 	 border: 0;
+ }
+
+

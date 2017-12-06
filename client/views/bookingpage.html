@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title></title>
+</head>
+<body>
+	<br><br>
+<div class="container-fluid">
+	<div class="row">
+		<div class="col-md-6">
+			<div class="form-group">
+
+				<label for="pickup">
+						Pick up Location
+					</label>
+                    <input type="text" placeholder="" id="pickup" ng-init="initAutocompletea()" ng-model="pickupLocation" ng-change="changepickup()" class="form-control"  required>
+                </div>
+                	<div class="form-group">
+				<label for="pickup">
+						Drop Location
+					</label>
+                    <input type="text" placeholder="your drop location" id="autocomplete" ng-model="dropLocation" ng-init="initAutocomplete()" class="form-control" required>
+                </div>
+             
+                <p ng-bind="dropLocation"></p>
+		</div>
+		<div class="col-md-6">
+		<div style="height: 400px;width: 100%;" ng-init="initMap()" id="map"></div>
+		<div id="infowindow-content">
+  <img src="" width="16" height="16" id="place-icon">
+  <span id="place-name"  class="title"></span><br>
+  <span id="place-address"></span>
+</div>
+    </div>
+		</div>
+	</div>
+</div>
+
+	
+</body>
+</html>

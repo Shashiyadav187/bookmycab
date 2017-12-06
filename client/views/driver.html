@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+</head>
+<body>
+    <div class="container">
+        <h5>DRIVER DETAILS</h5>
+   <form id="form1" runat="server">   
+        <img id="blah" src="https://imageog.flaticon.com/icons/png/512/3/3729.png?size=1200x630f&pad=10,10,10,10&ext=png&bg=FFFFFFFF" alt="your image" height="80" />
+        
+        <input type='file' id="imgInp" ng-init="photocheck()"/>
+        
+    </form> 
+    <br>
+
+    <div class="row">
+        <div class="col-md-6">
+
+            <form role="form">
+
+                <div class="row">
+
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <input type="text" placeholder="First Name" name="baseRate" ng-model="newDriver.firstName" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <input type="text" placeholder="last Name" name="baseRate" ng-model="newDriver.lastName" class="form-control" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="address">Address:</label>
+                    <textarea class="form-control" ng-model="newDriver.address" rows="2" id="address"></textarea>
+                </div>
+                <div class="form-group">
+                    <input type="email" placeholder="Email address" name="baseRate" ng-model="newDriver.email" class="form-control" required>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <input type="text" placeholder="Mobile Number" name="baseRate" ng-model="newDriver.mobile" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <input type="text" placeholder="License Number" name="baseRate" ng-model="newDriver.license" class="form-control" required>
+                        </div>
+                    </div>
+                </div>
+
+
+
+            </form>
+            <h5>CAB DETAILS</h5>
+           
+                  <div class="row">
+                
+                    <div class="col-md-6">
+                        <div class="form-group">
+                <input type="text" placeholder="Car make" name="baseRate" ng-model="newDriver.make" class="form-control" required>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <input type="text" placeholder="Car Model" name="baseRate" ng-model="newDriver.model" class="form-control" required>
+            </div>
+        </div>
+    </div>
+     <div class="row">
+                    <div class="col-md-6">
+            <div class="form-group">
+                <select class="form-control empty" name="cartype" ng-model="newDriver.cabType" ng-required="true">
+                    <option  value="" disabled selected hidden>Car type</option>
+                    <option>Micro</option>
+                    <option>Mini</option>
+                    <option>Sedan</option>
+                    <option>SUV</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-md-6">
+            <div class="form-group">
+                <input type="text" placeholder="Car Registration Number" name="baseRate" ng-model="newDriver.regNo" class="form-control" required>
+            </div>
+        </div>
+<button type="button" class="btn btn-success btn-block" ng-click="AddCab()">Add details</button>
+</div>
+        </div>
+        <div class="col-md-6">
+            <div class="row">
+                
+    <div ng-repeat="c in user">
+        
+ <div class="col-sm-4">
+    <div class="thumbnail">
+         
+        <img  width="100%" height="300" src="../public/images/cab2.jpg">
+         <div>{{c.firstName}}</div>
+         <div>{{c.mobileNum}}</div>
+         <div>{{c.EmailID}}</div>
+         <button class="btn btn-warning" ng-click="" data-toggle="modal" data-target="#updatingTariff"><span class="fa fa-pencil"></span> Edit</button>
+         <button class="btn btn-danger" ng-click="">Delete</button></td>
+</div>
+  </div>
+</div>
+</div>
+
+
+        </div>
+
+    </div>
+</div>
+</body>
+</html>

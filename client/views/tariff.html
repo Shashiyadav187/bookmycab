@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+
+    <style>
+input.ng-invalid {
+    border-color: 1px solid red;
+}
+
+</style>
+</head>
+<body>
+  <div class="container">
+<h2>Tariff details</h2>
+</div>
+
+
+<div class="modal fade" id="addnewTariff" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Add new Tariff details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+            </div>
+            <div class="modal-body">
+                    <form name="mytariffForm">
+                     <div class="form-group">
+                <select class="form-control empty" name="cartype" ng-model="newTariff.carType" ng-required="true">
+                    <option  value="" disabled selected hidden>Car type</option>
+                    <option>Micro</option>
+                    <option>Mini</option>
+                    <option>Sedan</option>
+                    <option>SUV</option>
+                </select>
+                </div>
+                <div class="form-group">
+                    <input type="text" placeholder="Base Fare" name="baseRate" ng-model="newTariff.baseRate" class="form-control" ng-pattern="/^[0-9]*$/" required>
+                       <span ng-show="mytariffForm.baseRate.$error.pattern">Please enter a  number!</span>
+                 <span ng-show="mytariffForm.baseRate.$touched && mytariffForm.baseRate.$error.required">This field is required!</span>
+                </div>
+              
+                 <div class="form-group">
+                    <input type="text"  name="normalRate" placeholder="Rate per Km" ng-model="newTariff.normalRate" class="form-control" ng-pattern="/^[0-9]*$/" required>
+                      <span ng-show="mytariffForm.normalRate.$error.pattern">Please enter a  number!</span>
+                 <span ng-show="mytariffForm.normalRate.$touched && mytariffForm.normalRate.$error.required">This field is required!</span>
+                </div>
+                 <div class="form-group">
+                    <input type="text" name="peakRate" placeholder="peakRate per Km" ng-model="newTariff.peakRate" class="form-control" ng-pattern="/^[0-9]*$/" required>
+                    <span ng-show="mytariffForm.peakRate.$error.pattern">Please enter a  number!</span>
+                 <span ng-show="mytariffForm.peakRate.$touched && mytariffForm.peakRate.$error.required">This field is required!</span>
+                </div>
+                <div class="row">
+                 <div class="form-group col-sm-6">
+                    <label for="spt">Start peak time</label>
+          <input class="form-control" type="time" id="spt" ng-model="newTariff.startpeakTime" placeholder="Time" required>
+        </div>
+
+           <div class="col-sm-6">
+            <label for="ept">End peak time</label>
+          <input class="form-control" type="time" id="ept" ng-model="newTariff.endpeakTime" placeholder="Time" required>
+        </div>   
+    </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" ng-disabled="mytariffForm.$error.required||mytariffForm.$error.pattern" ng-click="AddTariffPlan()" class="btn btn-primary" data-dismiss="modal">Add plan</button>
+            </div>
+        </form>
+        </div>
+    </div>
+</div>
+<br>
+<br>
+<div class="container">
+<div class="row">
+        <div class="col-md-12">
+            <table class="table table-bordered">
+                <thead>
+                    <tr><th></th>
+                        <th>Car type</th>
+                        <th>Normal Rate/Km</th>
+                        <th>Base Rate/Km</th>
+                        <th>Peak hour Rate/Km</th>
+                        <th>Peak hour Start</th>
+                        <th>Peak hour End</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="p in Tariffs">
+                        <td><button class="btn" ng-click="DeleteTariff(p)"><span class="fa fa-minus-circle"></span></button></td>
+                        <td>{{p.carType}}</td>
+                        <td>{{p.baseRate}}</td>
+                        <td>{{p.normalRate}}</td>
+                        <td>{{p.peakRate}}</td>
+                        <td>{{p.startpeakTime | date:'h:mma'}}</td>
+                        <td>{{p.endpeakTime | date:'h:mma'}}</td>
+                        <td><button class="btn btn-default" ng-click="SearchTariff(p)" data-toggle="modal" data-target="#updatingTariff"><span class="fa fa-pencil"></span> Edit</button></td>
+                        
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+<button class="btn btn-success" data-toggle="modal" data-target="#addnewTariff"><span class="fa fa-plus"></span> Add New Tariff Plan</button>
+</div>
+
+
+<div class="modal fade" id="updatingTariff" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Update Tariff details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+            </div>
+            <div class="modal-body">
+                <form name="updatetariff">
+                <div class="form-group">
+                    <input type="text" disabled="true" placeholder="carType" ng-model="newTarifff.carType" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <input type="text" placeholder="Base Fare" ng-model="newTarifff.baseRate" class="form-control"  ng-pattern="/^[0-9]*$/" required>
+                </div>
+                 <div class="form-group">
+                    <input type="text" placeholder="Rate per Km " ng-pattern="/^[0-9]*$/"  ng-model="newTarifff.normalRate" class="form-control">
+                </div>
+                 <div class="form-group">
+                    <input type="text"  placeholder="peak Rate per Km" ng-pattern="/^[0-9]*$/" ng-model="newTarifff.peakRate" class="form-control" required>
+                </div>
+
+    <div class="row">
+                 <div class="form-group col-sm-6">
+                    <label for="spt">Start peak time</label>
+          <input class="form-control" type="time" id="spt" ng-model="newTarifff.startpeakTime" placeholder="Time" required>
+        </div>
+
+           <div class="col-sm-6">
+            <label for="ept">End peak time</label>
+          <input class="form-control" type="time" id="ept" ng-model="newTarifff.endpeakTime" placeholder="Time" required>
+        </div> 
+  <span ng-show="updatetariff.$error.pattern">Please enter proper rates!</span>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" ng-disabled="updatetariff.$error.required||updatetariff.$error.pattern" ng-click="updateTariffPlan()" class="btn btn-primary" data-dismiss="modal">Update plan</button>
+            </div>
+        </div>
+    </form>
+    </div>
+</div>
+
+
+
+
+
+  
+</body>
+</html>
+
+
