@@ -1,4 +1,4 @@
-var app = angular.module('mycabApp',['ngRoute']);
+var app = angular.module('mycabApp',['ngRoute','ngFileUpload']);
 
 app.config(function($routeProvider,$locationProvider) {
     $routeProvider.when('/', {

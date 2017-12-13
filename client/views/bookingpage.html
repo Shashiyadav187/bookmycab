@@ -22,8 +22,15 @@
 					</label>
                     <input type="text" placeholder="your drop location" id="autocomplete" ng-model="dropLocation" ng-init="initAutocomplete()" class="form-control" required>
                 </div>
-             
-                <p ng-bind="dropLocation"></p>
+             <div class="col-sm-12">
+               <div class="btn-group btn-block">
+  <button type="button" class=" col-sm-3 btn btn-primary">mini</button>
+  <button type="button" class=" col-sm-3 btn btn-primary">micro</button>
+  <button type="button" class=" col-sm-3 btn btn-primary">sedan</button>
+  <button type="button" class=" col-sm-3 btn btn-primary">SUV</button>
+</div>
+</div>
+
 		</div>
 		<div class="col-md-6">
 		<div style="height: 400px;width: 100%;" ng-init="initMap()" id="map"></div>

@@ -1,20 +1,52 @@
 var express=require('express');
 var router=express.Router();
-var driver= require('../models/cabmodel.js');
+var cab= require('../models/cabmodel.js');
+var multer=require('multer');
+var filename="";
 
 
+var storage=multer.diskStorage({
+    destination:function(request,file,cb){
+        cb(null,'./client/public/uploads/')
+    },
+    filename:function(request,file,cb){
+        var timenw=Date.now();
+        cb(null,file.fieldname + '-' + Date.now()+".jpg");
+        filename=file.fieldname + '-' + Date.now()+".jpg";
+    }
 
-router.post('/addDriver',function(request,response){
-	var newDriver = new driver({
+}) 
+var upload=multer({
+    storage:storage
+}).single('file');
+
+
+router.post('/imageupload',function(request,response){
+    upload(request,response,function(error){
+        if(!error){
+            console.log("everthing went completely fine");
+            var result=response.data;
+            console.log(result);
+            console.log(response.data);
+                    }else{
+             console.log("something not right in upload");
+        }
+        console.log("upload image is called ");
+    })
+});
+
+
+router.post('/addCab',function(request,response){
+	var newDriver = new cab({
 	driverMobile:request.body.mobile,
-	driverPhoto:'blah',
+	driverPhoto:filename,
 	driverLicense:request.body.license,
 	driverAddress:request.body.address,
 	carModel:request.body.model,
 	carregNo:request.body.regNo,
 	cabType:request.body.cabType,
     carMake:request.body.make
-	});
+	}); 
 
 	newDriver.save(function(error, data) {
         if (error) {
@@ -27,8 +59,8 @@ router.post('/addDriver',function(request,response){
 	});
 });
 
-router.get('/getDriver', function(request, response) {
-    driver.find({}, function(error, data) {
+router.get('/getCab', function(request, response) {
+    cab.find({}, function(error, data) {
         if (error) {
             throw error;
         } else {
@@ -37,53 +69,46 @@ router.get('/getDriver', function(request, response) {
     });
 });
 
-// router.put('/updateDriver/:id', function(request, response) {
-//     driver.findOneAndUpdate({
-//         _id: req.params.id
-//     }, {
-//        	role:'driver',
-// 	driverName:request.body.driverName,
-// 	driverMobile:request.body.driverMobile,
-// 	driverPhoto:request.body.driverPhoto,
-// 	driverLicense:request.body.driverLicense,
-// 	driverAddress:request.body.driverAddress,
-// 	driverEmail:request.body.driverEmail,
-// 	carModel:request.body.carModel,
-// 	carregNo:request.body.carregNo,
-// 	cabType:request.body.cabType,
-// 	carMake:request.body.carMake
-//     }, function(err, data) {
-//         if (err) {
-//             throw err;
-//         } else {
-//             console.log('Data Updated Successfully');
-//         }
-//     });
-// });
+router.put('/updateCab/:id', function(request, response) {
+    console.log("sd");
+    console.log(request.body.mobileNum);
+    cab.findOneAndUpdate({
+         _id:request.params.id,
+    }, {
+        driverMobile:request.body.mobileNum,
+    }, function(err, data) {
+        if (err) {
+            throw err;
+        } else {
+            console.log('Data with cab details Updated Successfully');
+        }
+    });
+});
 
-// router.get('/searchDriver/:id', function(request, response) {
-//     driver.find({
-//         driverEmail:request.body.driverEmail,
-//     }, function(err, data) {
-//         if (err) {
-//             throw err;
-//         } else {
-//             response.json(data);
-//         }
-//     });
-// });
+router.get('/searchCab/:id', function(request, response) {
+    cab.find({
+        driverMobile:request.params.id,
+    }, function(err, data) {
+        if (err) {
+            throw err;
+        } else {
+            response.json(data);
+            console.log(data);
+        }
+    });
+});
 
-// router.delete('/deleteDriver/:id', function(request, response) {
-//     driver.remove({
-//         driverEmail:request.body.driverEmail,
-//     }, function(err, data) {
-//         if (err) {
-//             throw err;
-//         } else {
-//             console.log('drivers Removed Successfully');
-//         }
-//     });
-// });
+router.delete('/deleteCab/:id', function(request, response) {
+    cab.remove({
+       driverMobile:request.params.id,
+    }, function(err, data) {
+        if (err) {
+            throw err;
+        } else {
+            console.log('cab details Removed Successfully');
+        }
+    });
+});
 
 
 

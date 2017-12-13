@@ -7,16 +7,19 @@
 <body>
     <div class="container">
         <h5>DRIVER DETAILS</h5>
+        <p>Photo:</p>
    <form id="form1" runat="server">   
-        <img id="blah" src="https://imageog.flaticon.com/icons/png/512/3/3729.png?size=1200x630f&pad=10,10,10,10&ext=png&bg=FFFFFFFF" alt="your image" height="80" />
+        <img id="blah" src="https://imageog.flaticon.com/icons/png/512/3/3729.png?size=1200x630f&pad=10,10,10,10&ext=png&bg=FFFFFFFF" alt="your image" height="80"  ngf-thumbnail="!myimg.$error && myimg"/>
         
-        <input type='file' id="imgInp" ng-init="photocheck()"/>
+        <input type='file' id="imgInp" ngf-select ng-model="myimg" ngf-multiple="false" accept="image/*" />
+
         
     </form> 
     <br>
-
+</div>
+<div class="container-fluid">
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-md-5">
 
             <form role="form">
 
@@ -87,33 +90,92 @@
             <div class="form-group">
                 <input type="text" placeholder="Car Registration Number" name="baseRate" ng-model="newDriver.regNo" class="form-control" required>
             </div>
-        </div>
-<button type="button" class="btn btn-success btn-block" ng-click="AddCab()">Add details</button>
+        </div><button type="button" class="btn btn-success btn-block" ng-click="AddCab(myimg)">Add details</button>
 </div>
-        </div>
-        <div class="col-md-6">
-            <div class="row">
-                
-    <div ng-repeat="c in user">
+        </div>     
+        <div class="col-sm-6">
+        <div class="container">
+
+            <div class="row"> 
         
- <div class="col-sm-4">
-    <div class="thumbnail">
-         
-        <img  width="100%" height="300" src="../public/images/cab2.jpg">
-         <div>{{c.firstName}}</div>
-         <div>{{c.mobileNum}}</div>
-         <div>{{c.EmailID}}</div>
-         <button class="btn btn-warning" ng-click="" data-toggle="modal" data-target="#updatingTariff"><span class="fa fa-pencil"></span> Edit</button>
-         <button class="btn btn-danger" ng-click="">Delete</button></td>
-</div>
-  </div>
-</div>
-</div>
 
 
+
+<table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>photo</th>
+                        <th>name</th>
+                        <th>email</th>
+                        <th>mobile</th>
+                        <th></th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="c in user">
+              <!-- ng-repeat="p in mainCtrl.moviedetails| filter:{movietitle:c.moviename} -->
+       <!--          | filter:{driverMobile:c.mobileNum}"> -->
+                    <td ng-repeat="p in cabdetails | filter:{driverMobile:c.mobileNum}"><img  width="100%" height="50" src="../public/uploads/{{p.driverPhoto}}" /></td>
+                
+                <!-- <td></td> -->
+                
+                    <td>{{c.firstName}}</td>
+                    <td>{{c.EmailID}}</td>
+                    <td>{{c.mobileNum}}</td>
+                    
+                        <td>    <button class="btn btn-warning" ng-click="SearchUser(c)" data-toggle="modal" data-target="#updateDriver"> Edit</button></td>
+                        <td><button class="btn btn-danger" ng-click="deleteUser(c)">Delete</button></td>
+                        
+                    </tr>
+                </tbody>
+            </table>
         </div>
-
     </div>
 </div>
+</div>
+</div>
+
+<div class="modal fade" id="updateDriver" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Update Tariff details</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+            </div>
+            <div class="modal-body">
+                <form name="updatedriver">
+                    <label>Name:</label>
+                    <div class="form-group">
+                        <input type="text"  disabled placeholder="Name" ng-model="newDriverr.firstName" class="form-control"   required>
+                </div>
+                <label>Phone Number:</label>
+                <div class="form-group">
+                    <input type="text" placeholder="Mobile number" ng-model="newDriverr.mobileNum" class="form-control"   required>
+                </div>
+                <label>Email ID:</label>
+                 <div class="form-group">
+                    <input type="text"  disabled placeholder="Email ID"   ng-model="newDriverr.EmailID" class="form-control">
+                </div>
+                
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" ng-click="updateUser()" class="btn btn-primary" data-dismiss="modal">Update Driver</button>
+            </div>
+        </div>
+    </form>
+    </div>
+</div>
+
+
+
+
 </body>
+
 </html>
+
+
+
