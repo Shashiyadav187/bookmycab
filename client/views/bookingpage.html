@@ -24,14 +24,43 @@
                 </div>
              <div class="col-sm-12">
                <div class="btn-group btn-block">
-  <button type="button" class=" col-sm-3 btn btn-primary">mini</button>
-  <button type="button" class=" col-sm-3 btn btn-primary">micro</button>
-  <button type="button" class=" col-sm-3 btn btn-primary">sedan</button>
-  <button type="button" class=" col-sm-3 btn btn-primary">SUV</button>
+               	<!-- <input type="button"  ng-click="myname(this.id)" id="myBtn" class=" col-sm-3 btn btn-primary" value="Mini">
+               	<input type="button"  ng-click="myname(this.id)" id="2" class=" col-sm-3 btn btn-primary" value="Micro">
+               	<input type="button"  ng-click="myname()" id="3" class=" col-sm-3 btn btn-primary" value="SUV">
+               	<input type="button" ng-click="myname()" id="4" class=" col-sm-3 btn btn-primary" value="Sedan"> -->
+  <button type="button"   ng-click="myname($event)" id="Mini" class=" col-sm-3 btn btn-primary">Mini</button> 
+  <button type="button"  ng-click="myname($event)" id="Micro" class=" col-sm-3 btn btn-primary">Micro</button>
+  <button type="button"   ng-click="myname($event)" id="Sedan" class=" col-sm-3 btn btn-primary">Sedan</button>
+  <button type="button"  ng-click="myname($event)" id="SUV" class=" col-sm-3 btn btn-primary">SUV</button>
+</div>
+<br><br>
+<div class="row">
+<div class="col-sm-12">
+  <button type="button" ng-click="ridenow()" class="btn btn-success btn-block"><strong>Get Estimate of your ride</strong></button></div>
+   <!-- <div>
+        <strong>Results:</strong><br>
+      </div> -->  
+    </div>
+     <br>
+     <div class="well">
+      <div  id="output"></div>
+       <div  id="cost"></div>
+     </div>
+
+     
+  <!-- <div class="col-sm-6">
+  <button type="button" class="btn btn-success btn-block"><strong>RIDE LATER</strong></button></div> -->
+<br>
+<div class="row">
+<div class="col-sm-6">
+  <button type="button" ng-click="" class="btn btn-success btn-block"><strong>Ride Now</strong></button></div>
+ <div class="col-sm-6">
+  <button type="button" ng-click="" class="btn btn-info btn-block"><strong>Ride Later</strong></button></div>  
+</div>
 </div>
 </div>
 
-		</div>
+		
 		<div class="col-md-6">
 		<div style="height: 400px;width: 100%;" ng-init="initMap()" id="map"></div>
 		<div id="infowindow-content">

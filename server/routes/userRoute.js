@@ -1,13 +1,15 @@
 var express=require('express');
 var userrouter=express.Router();
 var user= require('../models/userdetailsmodel.js');
+var bcrypt=require('bcrypt-nodejs');
+var jwt=require('jsonwebtoken');
 
 
 
 userrouter.post('/addUser',function(request,response){
 	var newUser = new user({
 	role:'driver',
-	password:request.body.mobile,
+	password:bcrypt.hashSync(request.body.mobile),
 	firstName:request.body.firstName,
 	lastName:request.body.lastName,
 	mobileNum:request.body.mobile,
@@ -23,6 +25,68 @@ console.log(newUser);
         }
 	
 	});
+});
+userrouter.post('/Login',function(request,response){
+    console.log("in here");
+    console.log(request.body.username);
+    user.findOne({
+        EmailID:request.body.username
+    },function(err,data){
+        console.log(data);
+        if(err){
+            console.log("its an eroor");
+            throw err;
+        }else if(!data){
+            console.log("user is not found");
+            response.json({
+                success:false,
+                message:'user not found'
+            });
+        }else if(!bcrypt.compareSync(request.body.password,data.password)){
+            console.log("password is not correct");
+             response.json({
+                success:false,
+                message:'password is not correct'
+            });
+        }else{
+            console.log("user and pass correct");
+            var token=jwt.sign(data.toObject(),"mypasswordkey",{
+                expiresIn:2000
+            });
+            
+            response.json({
+                success:true,
+                message:"user and pass correct",
+                authtoken:token,
+                userDetail:data
+            });
+
+        }
+    });
+});
+
+
+
+
+userrouter.post('/addregisterUser',function(request,response){
+    var newUser = new user({
+    role:'user',
+    password:bcrypt.hashSync(request.body.password),
+    firstName:request.body.firstName,
+    lastName:request.body.lastName,
+    mobileNum:request.body.mobile,
+    EmailID:request.body.email
+    });
+console.log(newUser);
+    newUser.save(function(error, data) {
+        if (error) {
+            throw error;
+        } else {
+           console.log("The User details are added successfully");
+            response.end();
+        }
+    
+    });
 });
 
 userrouter.get('/getUser', function(request, response) {

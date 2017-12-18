@@ -19,7 +19,7 @@
 </div>
 <div class="container-fluid">
     <div class="row">
-        <div class="col-md-5">
+        <div class="col-sm-5">
 
             <form role="form">
 
@@ -93,10 +93,10 @@
         </div><button type="button" class="btn btn-success btn-block" ng-click="AddCab(myimg)">Add details</button>
 </div>
         </div>     
-        <div class="col-sm-6">
-        <div class="container">
+        <div class="col-sm-6 ">
+        <!-- <div class="container">
 
-            <div class="row"> 
+            <div class="row">  -->
         
 
 
@@ -113,10 +113,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr ng-repeat="c in user">
+                    <tr ng-repeat="c in user |filter:{role:'driver'}">
               <!-- ng-repeat="p in mainCtrl.moviedetails| filter:{movietitle:c.moviename} -->
        <!--          | filter:{driverMobile:c.mobileNum}"> -->
-                    <td ng-repeat="p in cabdetails | filter:{driverMobile:c.mobileNum}"><img  width="100%" height="50" src="../public/uploads/{{p.driverPhoto}}" /></td>
+                    <td ng-repeat="p in cabdetails | filter:{driverMobile:c.mobileNum}"><img  width="50" height="50" src="../public/uploads/{{p.driverPhoto}}" /></td>
                 
                 <!-- <td></td> -->
                 
@@ -133,8 +133,8 @@
         </div>
     </div>
 </div>
-</div>
-</div>
+<!-- </div>
+</div> -->
 
 <div class="modal fade" id="updateDriver" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">

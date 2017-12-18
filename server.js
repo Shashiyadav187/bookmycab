@@ -2,6 +2,7 @@ var express= require('express');
 var app=express();
 var logger=require('morgan');
 var mongoose=require('mongoose');
+var logger = require('morgan');
 
 var routes = require('./server/routes/driverroutes.js');
 var tariffroutes = require('./server/routes/tariffroute.js');
@@ -16,15 +17,18 @@ app.use(express.static(path.join(__dirname, '/client')));
 // 	extended:true
 // }));
 
-
+app.use(logger('dev'));
 
 
 
 mongoose.connect('mongodb://localhost/bookmycab-db');
 
 app.use('/driver',userrouter);
+app.use('/login',userrouter);
+app.use('/register',userrouter);
  app.use('/driver',routes);
 app.use('/tariff',tariffroutes);
+app.use('/api', userrouter);
 
 app.use(function(req,res){
 	res.sendFile(__dirname +'/client/index.html')

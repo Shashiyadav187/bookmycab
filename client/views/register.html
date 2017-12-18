@@ -1,0 +1,37 @@
+<div class="container-fluid">
+    <h2>Sign IN</h2>
+    <div class="row">
+        <div class="col-sm-9">
+            <form role="form">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <input type="text" placeholder="First Name"  ng-model="newUser.firstName" class="form-control" required>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-group">
+                            <input type="text" placeholder="Last Name" ng-model="newUser.lastName" class="form-control" required>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div class="form-group">
+                            <input type="text" placeholder="Mobile Number" ng-model="newUser.mobile" class="form-control" required>
+                        </div>
+                    </div>
+                 
+                </div>
+                   <div class="form-group">
+                    <input type="email" placeholder="Email address"  ng-model="newUser.email" class="form-control" required>
+                </div>
+                   <div class="form-group">
+                    <input type="text" placeholder="Enter password"  ng-model="newUser.password" class="form-control" required>
+                </div>
+            </form>
+        </div>
+    </div>
+     <button type="button" ng-click="AddUser()" class="btn btn-primary" data-dismiss="modal">Register</button>
+ </div>
+  
