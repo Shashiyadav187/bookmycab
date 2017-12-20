@@ -3,6 +3,8 @@ var app=express();
 var logger=require('morgan');
 var mongoose=require('mongoose');
 var logger = require('morgan');
+var server = require('http').Server(app);
+var io = require('socket.io').listen(server);
 
 var routes = require('./server/routes/driverroutes.js');
 var tariffroutes = require('./server/routes/tariffroute.js');
@@ -34,9 +36,63 @@ app.use(function(req,res){
 	res.sendFile(__dirname +'/client/index.html')
 });
 
+io.on('connection', function(socket) {
+    console.log('Socket Connected');
+    console.log(socket.id);
+     socket.broadcast.emit('driver joined', {
+      position: socket.position,
+    });
+    socket.on('SendLocation', function(data) {
+        console.log(data.position);
+        socket.broadcast.emit('SendtoAll', {
+            location: data.position
+        });
+    });
+    socket.on('disconnect', function(){
+        console.log('hey your disconnected');
+
+ socket.broadcast.emit('driverleft', {
+            location: socket.position
+        });
+    });
+
+          socket.on('bookedcab', function(data) {
+            console.log("hi socket connected")
+    console.log(data.hi);
+        socket.broadcast.emit('check', {
+            dridet:data.hi
+            
+        });
+    });
+
+     socket.on('bookedcust', function(data) {
+            console.log("hi custoner connected")
+    console.log(data.hi);
+        socket.broadcast.emit('customer', {
+            custdet:data.cabdet
+            
+        });
+    });
+
+
+});
+
+ // socket.on('disconnect', function () {
+ //    if (addedUser) {
+ //      --numUsers;
+
+ //      // echo globally that this client has left
+ //      socket.broadcast.emit('user left', {
+ //        username: socket.username,
+ //        numUsers: numUsers
+ //      });
+ //    }
+ //  });
+
+
 
 app.use(logger('dev'));
 
-app.listen(3000,function(request,response){
+server.listen(3000,function(request,response){
 	console.log("server running on port number 3000");
 });

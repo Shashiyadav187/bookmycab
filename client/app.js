@@ -22,6 +22,10 @@ app.config(function($routeProvider,$locationProvider) {
     }).when('/auth', {
         templateUrl: './views/unauth.html'
            
+    }).when('/dripage', {
+        templateUrl: './views/driverbooking.html',
+          controller: 'dribookingController'
+           
     });
     
     $locationProvider.hashPrefix('');
@@ -35,56 +39,49 @@ app.config(function($routeProvider,$locationProvider) {
             var public=['/','/login','/register'];
             var admin=['/tariff','/driver','/'];
             var customer=['/book','/','/login','/register'];
+            var driver=['/dripage','/','/login','/register'];
             var user=$cookies.getObject('mycookie');
+
            
             if(user!=undefined){
                 var loggedinuser=user;
             }
             console.log($sessionStorage.tokeninfo);
             var restrictpage=public.indexOf($location.path())=== -1;
-            if(restrictpage&& !$sessionStorage.tokeninfo && $location.path()){
+            if(restrictpage&& !$sessionStorage.tokeninfo && $location.path()!=''){
                 $location.path('/login');
             }
             else {
               console.log(user)
 
                  if(user!=undefined){
-                    // if(user.role=='admin'){
-                    //     console.log("im a user");
-                    //   var Admin=admin.indexOf($location.path())=== -1;  
-                    //   if(Admin){
-                    //     $location.path('/auth');
-                    //   } 
-                    // }
-                    // else{
                       if(user.role=='user'){
                       console.log("what");
-                       var User=customer.indexOf($location.path())=== -1; 
-                        if(User){
-                       console.log(User);
-                      // $location.path('/auth');
+                       var notUser=customer.indexOf($location.path())=== -1; 
+                        if(notUser){
+                       $location.path('/auth');
+                     
                      }
                     }
+                    else if(user.role=='admin'){
+                        console.log("im a user");
+                      var notAdmin=admin.indexOf($location.path())=== -1;  
+                      if(notAdmin){
+                        $location.path('/auth');
+                      } 
+                    }
+                    
+                    else if(user.role=='driver'){
+                        console.log("im adriver");
+                      var Driver=driver.indexOf($location.path())=== -1;  
+                      if(Driver){
+                        $location.path('/auth');
+                      } 
+                    }
+                    
                     }
                   }
-                 
-             //     else {
-                
-                    
-             //        if(user.role=='user'){
-             //            console.log("im a user");
-             //          var User=customer.indexOf($location.path())=== -1;  
-             //          if(User){
-             //            console.log(User);
-             //            console.log("go to auth page");
-             //            $location.path('/auth');
-                      
-             //        }
-             //     }
-             // }
-             // }
-
-            
+       
         })
     })
 

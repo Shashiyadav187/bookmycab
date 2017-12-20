@@ -1,7 +1,8 @@
-angular.module('mycabApp').controller('BookingController', function($scope,$http,$filter) {
+angular.module('mycabApp').controller('BookingController', function($scope,$http,$filter,$cookies) {
     $scope.pickupLocation = "";
     $scope.dropLocation = "";
     var markersArray = [];
+    var drivercar=[];
 
     $scope.initMap = function() {
 
@@ -14,6 +15,8 @@ angular.module('mycabApp').controller('BookingController', function($scope,$http
                     zoom: 13,
                     mapTypeId: google.maps.MapTypeId.ROADMAP
                 };
+                console.log(p.coords.latitude);
+                console.log(p.coords.longitude);
                 var map = new google.maps.Map(document.getElementById("map"), mapOptions);
 
                 var geocoder = new google.maps.Geocoder;
@@ -21,10 +24,191 @@ angular.module('mycabApp').controller('BookingController', function($scope,$http
                 var directionsDisplay = new google.maps.DirectionsRenderer;
                 var directionsService = new google.maps.DirectionsService;
                 directionsDisplay.setMap(map);
-
+                var socket = io();
+                var imag = {
+    url: "http://icons.iconarchive.com/icons/icons-land/transporter/256/Car-Top-Red-icon.png", // url
+    scaledSize: new google.maps.Size(30,30), 
+};
+                //var imag=;
                 var infowindow = new google.maps.InfoWindow;
                 var bounds = new google.maps.LatLngBounds;
                 geocodeLatLng(geocoder, map, infowindow, LatLng);
+            
+        
+ socket.on('SendtoAll', function(data) {
+    $scope.cablocation= data.location;
+console.log(data);
+deleteMarkers(drivercar);
+drivercar=[];
+var mar = new google.maps.Marker({
+    position: data.location,
+    map: map,
+     icon: imag,
+  });
+drivercar.push(mar);
+console.log(drivercar);
+
+  
+});
+
+ 
+
+     socket.on('disconnect', function () {
+    console.log('you have been disconnected');
+    //mar.setVisible(false);
+  });
+
+socket.on('driverleft', function(data) {
+    console.log("bye");
+ deleteMarkers(drivercar);
+
+  
+});
+
+$scope.bookcab=function(){
+console.log($scope.cablocation);
+ var finish=document.getElementById('autocomplete').value;
+console.log(finish);
+    var start = document.getElementById('pickup').text;
+    var end=$scope.cablocation.lat+","+$scope.cablocation.lng;
+    var user=$cookies.getObject('driverdet');
+    console.log(user);
+
+
+
+    calculateAndDisplayRoute(directionsService, directionsDisplay);
+                     var start = document.getElementById('pickup').text;
+                    
+                    // var end = document.getElementById('autocomplete').value;
+    var end=$scope.cablocation.lat+","+$scope.cablocation.lng;
+                    var service = new google.maps.DistanceMatrixService;
+                    service.getDistanceMatrix({
+                        origins: [start],
+                        destinations:[end],
+                        travelMode: 'DRIVING',
+                        unitSystem: google.maps.UnitSystem.METRIC,
+                        avoidHighways: false,
+                        avoidTolls: false
+                    }, function(response, status) {
+                        if (status !== 'OK') {
+                            alert('Error was: ' + status);
+                        } else {
+                            var originList = response.originAddresses;
+                            var destinationList = response.destinationAddresses;
+                            //var outputDiv = document.getElementById('output');
+                            //outputDiv.innerHTML = '';
+                            //deleteMarkers(markersArray);
+console.log(response);
+console.log(destinationList);
+                            var showGeocodedAddressOnMap = function(asDestination) {
+                                //var icon = asDestination ? destinationIcon : originIcon;
+                                return function(results, status) {
+                                    if (status === 'OK') {
+
+                                        map.fitBounds(bounds.extend(results[0].geometry.location));
+                                      
+
+                                    } else {
+                                        alert('Geocode was not successful due to: ' + status);
+                                    }
+                                };
+                            };
+
+                            for (var i = 0; i < originList.length; i++) {
+                                var results = response.rows[i].elements;
+                                geocoder.geocode({
+                                        'address': originList[i]
+                                    },
+                                    showGeocodedAddressOnMap(false));
+                                for (var j = 0; j < results.length; j++) {
+                                    geocoder.geocode({
+                                            'address': destinationList[j]
+                                        },
+                                        showGeocodedAddressOnMap(true));
+                                    totalkm=results[j].distance.text.split(" ",1)[0];
+
+                                        if(user.role=='driver'){
+       $(document).ready(function() {
+        $('#hi').click(function() {
+         $http.get('/driver/searchCab/' + user.mobileNum).then(function(response) {
+                if(response.data[0].cabType==$scope.carselected&&totalkm<1.0){
+                    console.log("cab available");
+
+
+    
+
+$scope.bookeddriver = {
+            driverpic:response.data[0].driverPhoto,
+            pickup:originList[0],
+            drop:finish,
+            cab:response.data[0].carMake,
+            mob:response.data[0].driverMobile,
+            fare:rate
+            }
+
+
+// socket.emit('bookedcab', {
+//  driverpic:response.data[0].driverPhoto,
+//             pickup:originList[0],
+//             drop:finish,
+//             cab:response.data[0].carMake,
+//             mob:response.data[0].driverMobile,
+//             fare:rate
+//   });
+
+socket.emit('bookedcab', {
+ // //driverpic:response.data[0].driverPhoto,
+ //            pickup:originList[0],
+ //            drop:finish,
+ //            //cab:response.data[0].carMake,
+ //            mob:response.data[0].driverMobile,
+ //            fre:rate
+
+ hi:$scope.bookeddriver
+  });
+ socket.on('customer', function(data) {
+    console.log(data.custdet);
+    $("#cusmodal").modal();
+
+
+ });
+
+
+
+
+                
+               
+        
+
+console.log($scope.driname);
+
+
+                }
+               
+                else{
+                    alert("cab not available")
+                }
+                 });
+        });
+          });
+       // console.log($scope.newDrivers);
+    }
+                                    //totalkm=km[0]
+                                    // outputDiv.innerHTML += "Estimated Distance :" +
+                                    //     results[j].distance.text + '<br>' + "Estimated Time :"+
+                                    //     results[j].duration.text + '<br>';
+                                    console.log(totalkm);
+                                    if(totalkm < 1.0){
+                                        console.log("bookcab");
+
+                                    }
+                                    }
+                                }
+                            }
+
+                });
+  
+}
 
 
                 $scope.ridenow = function() {
@@ -56,6 +240,7 @@ angular.module('mycabApp').controller('BookingController', function($scope,$http
                             var outputDiv = document.getElementById('output');
                             outputDiv.innerHTML = '';
                             deleteMarkers(markersArray);
+                            console.log(response);
 
                             var showGeocodedAddressOnMap = function(asDestination) {
                                 //var icon = asDestination ? destinationIcon : originIcon;
@@ -91,8 +276,7 @@ angular.module('mycabApp').controller('BookingController', function($scope,$http
                                     outputDiv.innerHTML += "Estimated Distance :" +
                                         results[j].distance.text + '<br>' + "Estimated Time :"+
                                         results[j].duration.text + '<br>';
-
-                                                      $scope.st=$filter('date')($scope.Tariff.startpeakTime, 'h:mm a');
+$scope.st=$filter('date')($scope.Tariff.startpeakTime, 'h:mm a');
          $scope.et=$filter('date')($scope.Tariff.endpeakTime, 'h:mm a');
               var a=  totalkm;
               console.log($scope.rate);
