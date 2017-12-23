@@ -4,6 +4,7 @@ angular.module('mycabApp').controller('loginController', function($scope, $rootS
 $scope.Login=function(){
 	console.log("sdfhj");
 	authService.Login($scope.User);
+	
 }
 
 

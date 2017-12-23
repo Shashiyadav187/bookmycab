@@ -40,13 +40,13 @@ userrouter.post('/Login',function(request,response){
             console.log("user is not found");
             response.json({
                 success:false,
-                message:'user not found'
+                message:'User not found,Please login'
             });
         }else if(!bcrypt.compareSync(request.body.password,data.password)){
             console.log("password is not correct");
              response.json({
                 success:false,
-                message:'password is not correct'
+                message:'Password is not correct,Enter correct password'
             });
         }else{
             console.log("user and pass correct");
@@ -65,7 +65,49 @@ userrouter.post('/Login',function(request,response){
     });
 });
 
+userrouter.post('/checkPass',function(request,response){
+    console.log(request.body.password.old);
 
+  user.find({EmailID:request.body.cookiedata.EmailID},function(error,data){
+        console.log(data.password);
+    if(error){
+      console.log("its an eroor");
+            throw error;
+
+        }else if(!bcrypt.compareSync(request.body.password.old,request.body.cookiedata.password)){
+            console.log("password incorrect");
+            response.json({
+                success:false,
+                message:'user not found'
+            });
+        }
+        else{
+            response.json({
+                success:true,
+                message:"password is correct",
+                password:data
+            });
+        }
+
+    //     else{
+    //         console.log("password is correct");
+    //         // var token=jwt.sign(data.toObject(),"mypasswordkey",{
+    //         //     expiresIn:2000
+    //         // });
+            
+    //         response.json({
+    //             success:true,
+    //             message:"password is correct",
+    //             authtoken:token,
+    //             userDetail:data
+    //         });
+    //     }
+    
+
+     });
+  
+
+});
 
 
 userrouter.post('/addregisterUser',function(request,response){
@@ -114,7 +156,22 @@ userrouter.delete('/deleteUser/:id',function(request,response){
     })
 });
 
+userrouter.put('/updatePass/:id',function(request,response){
+    user.findOneAndUpdate({
+        _id:request.params.id,
+    },{
+       password:bcrypt.hashSync(request.body.new)
 
+    },function(err,data){
+        if(err){
+            throw err;
+        }else{
+           console.log('Data  for user Updated Successfully'); 
+        }
+    
+    });
+
+});
 
 
 userrouter.put('/updateUser/:id',function(request,response){

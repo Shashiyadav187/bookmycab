@@ -1,5 +1,5 @@
 angular.module('mycabApp').controller('DriverController', function($scope, $rootScope, $http,$filter,Upload) {
-    
+    $scope.flag=0;
 
        $scope.AddCab = function(file) {
        
@@ -15,7 +15,17 @@ angular.module('mycabApp').controller('DriverController', function($scope, $root
             }else {
                 console.log("problem in upload");
             }
-        })
+        });
+        for(let x in $scope.user){
+            if($scope.user[x].mobileNum==$scope.newDriver.mobile||$scope.user[x].EmailID==$scope.newDriver.email){
+                $scope.flag=0;
+                break;
+            }else{
+                 $scope.flag=1;
+            }
+        }
+        console.log("flag value"+$scope.flag);
+if($scope.flag==1){
 
        $http.post('/driver/addCab', $scope.newDriver).then(function(response) {
             console.log('Data Saved Successfully');
@@ -26,8 +36,17 @@ angular.module('mycabApp').controller('DriverController', function($scope, $root
             alert('data for cab saved is Saved Successfully');
         });
         });
+
+
+        }
+        else{
+        alert("User already registered");
+      }
+      $scope.newDriver="";
+
         GetCab();
     }
+
 
 // var link = document.createElement('a');
 // var getsrc= document.getElementById("blah").src;

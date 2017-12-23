@@ -22,9 +22,17 @@ app.config(function($routeProvider,$locationProvider) {
     }).when('/auth', {
         templateUrl: './views/unauth.html'
            
-    }).when('/dripage', {
+    }).when('/dripage',{
         templateUrl: './views/driverbooking.html',
           controller: 'dribookingController'
+           
+    }).when('/rides',{
+        templateUrl: './views/myrides.html',
+          controller: 'rideHistController'
+           
+    }).when('/changepass',{
+        templateUrl: './views/changepass.html',
+          controller: 'changepassController'
            
     });
     
@@ -37,9 +45,9 @@ app.config(function($routeProvider,$locationProvider) {
         $rootScope.$on('$locationChangeStart',function(event,next,current){
              
             var public=['/','/login','/register'];
-            var admin=['/tariff','/driver','/'];
-            var customer=['/book','/','/login','/register'];
-            var driver=['/dripage','/','/login','/register'];
+            var admin=['/tariff','/driver','/','/login','/register'];
+            var customer=['/book','/','/login','/rides','/register','/changepass'];
+            var driver=['/dripage','/','/login','/register','/changepass'];
             var user=$cookies.getObject('mycookie');
 
            

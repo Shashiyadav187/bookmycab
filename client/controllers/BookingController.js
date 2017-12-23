@@ -1,13 +1,23 @@
-angular.module('mycabApp').controller('BookingController', function($scope,$http,$filter,$cookies) {
+angular.module('mycabApp').controller('BookingController', function($scope, $http, $filter, $cookies) {
     $scope.pickupLocation = "";
     $scope.dropLocation = "";
     var markersArray = [];
-    var drivercar=[];
+    var drivercar = [];
+    $scope.Tariff='';
+    $scope.IsVisible = false;
+    $scope.check=false;
+
+     $(document).ready(function() {
+      $('#rl').click(function() {
+        $("#rideLaterr").modal();
+      });
+  });
 
     $scope.initMap = function() {
 
         if (navigator.geolocation) {
-
+            $scope.IsVisible =false;
+             $scope.check=false;
             navigator.geolocation.getCurrentPosition(function(p) {
                 var LatLng = new google.maps.LatLng(p.coords.latitude, p.coords.longitude);
                 var mapOptions = {
@@ -26,65 +36,69 @@ angular.module('mycabApp').controller('BookingController', function($scope,$http
                 directionsDisplay.setMap(map);
                 var socket = io();
                 var imag = {
-    url: "http://icons.iconarchive.com/icons/icons-land/transporter/256/Car-Top-Red-icon.png", // url
-    scaledSize: new google.maps.Size(30,30), 
-};
+                    url: "../public/images/redcar.png", // url
+                    scaledSize: new google.maps.Size(30, 30),
+                };
                 //var imag=;
                 var infowindow = new google.maps.InfoWindow;
                 var bounds = new google.maps.LatLngBounds;
                 geocodeLatLng(geocoder, map, infowindow, LatLng);
-            
-        
- socket.on('SendtoAll', function(data) {
-    $scope.cablocation= data.location;
-console.log(data);
-deleteMarkers(drivercar);
-drivercar=[];
-var mar = new google.maps.Marker({
-    position: data.location,
-    map: map,
-     icon: imag,
-  });
-drivercar.push(mar);
-console.log(drivercar);
 
-  
-});
 
- 
+                socket.on('SendtoAll', function(data) {
+                     console.log("dirver logged in customer");
+                    $scope.cablocation = data.location;
+                    $scope.drimob=data.drimob;
+                    console.log(data);
+                    deleteMarkers(drivercar);
+                    drivercar = [];
+                    var mar = new google.maps.Marker({
+                        position: data.location,
+                        map: map,
+                        icon: imag,
+                    });
+                    drivercar.push(mar);
+                    console.log(drivercar);
 
-     socket.on('disconnect', function () {
-    console.log('you have been disconnected');
-    //mar.setVisible(false);
-  });
 
-socket.on('driverleft', function(data) {
-    console.log("bye");
- deleteMarkers(drivercar);
-
-  
-});
-
-$scope.bookcab=function(){
-console.log($scope.cablocation);
- var finish=document.getElementById('autocomplete').value;
-console.log(finish);
-    var start = document.getElementById('pickup').text;
-    var end=$scope.cablocation.lat+","+$scope.cablocation.lng;
-    var user=$cookies.getObject('driverdet');
-    console.log(user);
+                });
 
 
 
-    calculateAndDisplayRoute(directionsService, directionsDisplay);
-                     var start = document.getElementById('pickup').text;
-                    
+                socket.on('disconnect', function() {
+                    console.log('you have been disconnected');
+                    //mar.setVisible(false);
+                });
+
+                socket.on('driverleft', function(data) {
+                   
+                    deleteMarkers(drivercar);
+
+
+                });
+
+                $scope.bookcab = function() {
+                     console.log($scope.cablocation);
+                    if($scope.cablocation!=undefined){
+                    console.log($scope.cablocation);
+                    var finish = document.getElementById('autocomplete').value;
+                    console.log(finish);
+                    var start = document.getElementById('pickup').text;
+                    var end = $scope.cablocation.lat + "," + $scope.cablocation.lng;
+                    var cust = $cookies.getObject('userdet');
+                    console.log(cust);
+
+
+
+                    calculateAndDisplayRoute(directionsService, directionsDisplay);
+                    var start = document.getElementById('pickup').text;
+
                     // var end = document.getElementById('autocomplete').value;
-    var end=$scope.cablocation.lat+","+$scope.cablocation.lng;
+                    var end = $scope.cablocation.lat + "," + $scope.cablocation.lng;
                     var service = new google.maps.DistanceMatrixService;
                     service.getDistanceMatrix({
                         origins: [start],
-                        destinations:[end],
+                        destinations: [end],
                         travelMode: 'DRIVING',
                         unitSystem: google.maps.UnitSystem.METRIC,
                         avoidHighways: false,
@@ -95,18 +109,15 @@ console.log(finish);
                         } else {
                             var originList = response.originAddresses;
                             var destinationList = response.destinationAddresses;
-                            //var outputDiv = document.getElementById('output');
-                            //outputDiv.innerHTML = '';
-                            //deleteMarkers(markersArray);
-console.log(response);
-console.log(destinationList);
+                            console.log(response);
+                            console.log(destinationList);
                             var showGeocodedAddressOnMap = function(asDestination) {
                                 //var icon = asDestination ? destinationIcon : originIcon;
                                 return function(results, status) {
                                     if (status === 'OK') {
 
                                         map.fitBounds(bounds.extend(results[0].geometry.location));
-                                      
+
 
                                     } else {
                                         alert('Geocode was not successful due to: ' + status);
@@ -125,97 +136,137 @@ console.log(destinationList);
                                             'address': destinationList[j]
                                         },
                                         showGeocodedAddressOnMap(true));
-                                    totalkm=results[j].distance.text.split(" ",1)[0];
+                                    console.log(results[j].distance.text);
+                                    totalkm = results[j].distance.text.split(" ", 1)[0];
+                                
+                                    //if (user.role =='driver') {
+                                        $(document).ready(function() {
+                                            $('#hi').click(function() {
+                                                $http.get('/driver/searchCab/' + $scope.drimob.mobileNum).then(function(response) {
+                                                             console.log(response.data[0].cabType);
+                                                              console.log($scope.carselected);
+                                                               console.log(totalkm);
+                                                 $http.get('/driver/SearchUser/' + $scope.drimob.mobileNum).then(function(res) {
+                                                            console.log(response);
+                                                    $scope.dname= {
+                                                    firstName:res.data[0].firstName+" "+res.data[0].lastName,
+                                                            }
+                                                            
 
-                                        if(user.role=='driver'){
-       $(document).ready(function() {
-        $('#hi').click(function() {
-         $http.get('/driver/searchCab/' + user.mobileNum).then(function(response) {
-                if(response.data[0].cabType==$scope.carselected&&totalkm<1.0){
-                    console.log("cab available");
+                                                    if (response.data[0].cabType == $scope.carselected && totalkm <= 1.0) {
+                                                        console.log("cab available");
+                                                        $scope.bookeddriver = {
+                                                            customername:cust.firstName,
+                                                            customernum:cust.mobileNum,
+                                                            drivername:$scope.dname.firstName,
+                                                            driverpic: response.data[0].driverPhoto,
+                                                            pickup: originList[0],
+                                                            drop: finish,
+                                                            cab: response.data[0].carMake,
+                                                            mob: response.data[0].driverMobile,
+                                                            fare: rate
+                                                        }
 
+                                                        socket.emit('bookedcab', {
+                                                            hi: $scope.bookeddriver,
+                                                            status:true
+                                                        });
+                                                        socket.on('customer', function(data) {
+                                                            console.log(data.custdet);
+                                                            $("#cusmodal").modal();
+                                                        });
+                                                        console.log($scope.driname);
+                                                   console.log($scope.newride);
 
-    
-
-$scope.bookeddriver = {
-            driverpic:response.data[0].driverPhoto,
-            pickup:originList[0],
-            drop:finish,
-            cab:response.data[0].carMake,
-            mob:response.data[0].driverMobile,
-            fare:rate
-            }
-
-
-// socket.emit('bookedcab', {
-//  driverpic:response.data[0].driverPhoto,
-//             pickup:originList[0],
-//             drop:finish,
-//             cab:response.data[0].carMake,
-//             mob:response.data[0].driverMobile,
-//             fare:rate
-//   });
-
-socket.emit('bookedcab', {
- // //driverpic:response.data[0].driverPhoto,
- //            pickup:originList[0],
- //            drop:finish,
- //            //cab:response.data[0].carMake,
- //            mob:response.data[0].driverMobile,
- //            fre:rate
-
- hi:$scope.bookeddriver
-  });
- socket.on('customer', function(data) {
-    console.log(data.custdet);
-    $("#cusmodal").modal();
-
-
- });
-
+                                          $http.post('/driver/addRide', $scope.newride).then(function(response) {
+                                                            console.log('Data Saved Successfully');
+                                                            alert('Data for ride history Saved Successfully');
+                                                        });
 
 
+                                                    } else {
 
-                
-               
-        
-
-console.log($scope.driname);
-
-
-                }
-               
-                else{
-                    alert("cab not available")
-                }
-                 });
-        });
-          });
-       // console.log($scope.newDrivers);
-    }
-                                    //totalkm=km[0]
-                                    // outputDiv.innerHTML += "Estimated Distance :" +
-                                    //     results[j].distance.text + '<br>' + "Estimated Time :"+
-                                    //     results[j].duration.text + '<br>';
+                                                        alert("cab not available")
+                                                    }
+});
+                                                });
+                                            });
+                                        });
+                                    //}
                                     console.log(totalkm);
-                                    if(totalkm < 1.0){
+                                    if (totalkm < 1.0) {
                                         console.log("bookcab");
 
                                     }
-                                    }
                                 }
                             }
+                        }
 
-                });
-  
-}
+                    });
+
+                }else {
+                    alert("no driver logged in");
+                }
+            }
+
+                $scope.addridelater=function() {
+                    var today = new Date();
+             var date = today.getDate()+'/'+(today.getMonth()+1)+'/'+today.getFullYear();
+        var h = today.getHours(),
+            m = today.getMinutes();
+        a = m < 10 ? ("0" + m) : (m);
+        var mytime=((h > 12) ? (h - 12 + ':' + a + ' PM') : (h + ':' + a + ' AM'));
+
+       var cust = $cookies.getObject('userdet');
+        var ldate = $filter('date')($scope.laterdate, 'dd/MM/yyyy');
+       var l = $filter('date')($scope.laterdate, 'yyyy-MM-dd');
+      var ltime = $filter('date')($scope.latertime, 'h:mm a');
+                  //var ltime = $filter('date')($scope.latertime, 'h:mm a');
+            var ha=ldate+" "+ltime;
+            console.log(ha);
+            var choosendate=new Date(l+" "+ltime );
+              
+                console.log($scope.latertime+(60 * 60 * 12 * 1000));
+               var start=today.getTime()+(60 * 60 * 12 * 1000);
+                var end=today.getTime()+(60 * 60 * 48 * 1000);
+                 var advancetimestart=Date.parse($filter('date')(start, 'dd/MM/yyyy h:mm a'));
+                 var advancetimeend=Date.parse($filter('date')(end, 'dd/MM/yyyy h:mm a'));
+                 console.log(start);
+                 console.log(end);
+                 console.log(advancetimeend);
+                 var deadLineStart=Date.parse(ldate+" "+ltime);
+                 if(start<choosendate&&end>choosendate){
+                       $scope.ridelaterdetails={
+                        custmob:cust.mobileNum,
+                         pickup:$scope.pickupLocation,
+                         drop:$scope.dropLocation,
+                      ridedate:ldate,
+                        ridingtime:ltime,
+                       distance:$scope.mydist,
+                         status:'Ride Later',
+                         totalfare:$scope.myrate,
+                    }
+                    console.log($scope.ridelaterdetails);
+                 $http.post('/driver/addRide', $scope.ridelaterdetails).then(function(response) {
+                        console.log('Data Saved Successfully');
+                         alert('Data for ride later  Saved Successfully');
+                    });
+
+                 }else {
+                    alert("hi you cant advance book,make sure it is greater than 12 hourse from now and less than 48 hours");
+                 }
+           
+
+
+                }
 
 
                 $scope.ridenow = function() {
-
-            gettariff();
-
-
+                    gettariff();
+                     $scope.IsVisible =true;
+                        $scope.pickupLocation =document.getElementById('pickup').value;
+                    $scope.dropLocation = document.getElementById('autocomplete').value;
+                 
                     calculateAndDisplayRoute(directionsService, directionsDisplay);
                     deleteMarkers(markersArray);
                     console.log("from ride now function");
@@ -271,46 +322,62 @@ console.log($scope.driname);
                                             'address': destinationList[j]
                                         },
                                         showGeocodedAddressOnMap(true));
-                                    totalkm=results[j].distance.text.split(" ",1)[0];
+                                    totalkm = results[j].distance.text.split(" ", 1)[0];
                                     //totalkm=km[0]
                                     outputDiv.innerHTML += "Estimated Distance :" +
-                                        results[j].distance.text + '<br>' + "Estimated Time :"+
+                                        results[j].distance.text + '<br>' + "Estimated Time :" +
                                         results[j].duration.text + '<br>';
-$scope.st=$filter('date')($scope.Tariff.startpeakTime, 'h:mm a');
-         $scope.et=$filter('date')($scope.Tariff.endpeakTime, 'h:mm a');
-              var a=  totalkm;
-              console.log($scope.rate);
-                    //document.getElementById('cost').value = getTimeStamp();
-        var booktime=getTimeStamp();
-        //document.getElementById('cost').innerHTML =rate;
+                                    $scope.st = $filter('date')($scope.Tariff.startpeakTime, 'h:mm a');
+                                    $scope.et = $filter('date')($scope.Tariff.endpeakTime, 'h:mm a');
+                                    var a = totalkm;
+                                    console.log($scope.rate);
+                                    var today = new Date();
+                                    var date = today.getDate()+'-'+(today.getMonth()+1)+'-'+today.getFullYear();
+                                    console.log(date);
+                                    //document.getElementById('cost').value = getTimeStamp();
+                                    var booktime = getTimeStamp();
+                                    //document.getElementById('cost').innerHTML =rate;
+                    var cust = $cookies.getObject('userdet');
+                    console.log(cust);
+
+                                    var tariffstarttime = Date.parse("01/01/2017 " + $scope.st);
+                                    var bookingtime = Date.parse("01/01/2017 " + booktime);
+                                    var tariffendtime = Date.parse("01/01/2017 " + $scope.et);
+                                    console.log($scope.Tariff.baseRate);
+                                    console.log(parseInt($scope.Tariff.baseRate) + totalkm * parseInt($scope.Tariff.normalRate));
+                                    console.log(totalkm * $scope.Tariff.normalRate);
 
 
-        var tariffstarttime=Date.parse("01/01/2017 "+$scope.st);
-        var bookingtime=Date.parse("01/01/2017 "+booktime);
-        var tariffendtime=Date.parse("01/01/2017 "+$scope.et);
-        console.log($scope.Tariff.baseRate);
-        console.log(parseInt($scope.Tariff.baseRate)+totalkm*parseInt($scope.Tariff.normalRate));
-        console.log(totalkm*$scope.Tariff.normalRate);
+                                    if (bookingtime > tariffstarttime && bookingtime < tariffendtime) {
+                                        rate = parseInt($scope.Tariff.baseRate) + totalkm * parseInt($scope.Tariff.peakRate);
+                                        document.getElementById('cost').innerHTML = rate;
+                                    } else {
+                                        rate = parseInt($scope.Tariff.baseRate) + totalkm * parseInt($scope.Tariff.normalRate);
+                                        document.getElementById('cost').innerHTML = "Estimated Cost :Rs " + rate;
+                                    }
+                                    $scope.mydist=results[j].distance.text
+                                    $scope.myrate=rate;
+                                    $scope.newride={
+                                          custmob:cust.mobileNum,
+                                         pickup:originList[0],
+                                         drop:destinationList[0],
+                                         ridedate:date,
+                                         ridingtime:booktime,
+                                         distance:results[j].distance.text,
+                                         status:'Current',
+                                         totalfare:rate,
+                                                        }
 
-
-        if (bookingtime>tariffstarttime&&bookingtime<tariffendtime)
-        {
-           rate=parseInt($scope.Tariff.baseRate)+totalkm*parseInt($scope.Tariff.peakRate);
-           document.getElementById('cost').innerHTML =rate;
-        }
-        else
-        {
-            rate=parseInt($scope.Tariff.baseRate)+totalkm*parseInt($scope.Tariff.normalRate);
-            document.getElementById('cost').innerHTML ="Estimated Cost :Rs "+rate;
-        }
                                 }
+
+
                             }
                         }
+                        
                     });
-      
 
-console.log($scope.rate);
-         
+
+                    console.log($scope.rate);
 
 
 
@@ -359,16 +426,17 @@ console.log($scope.rate);
 
     }
 
-           function deleteMarkers(markersArray) {
-                        console.log(markersArray);
+    function deleteMarkers(markersArray) {
+        console.log(markersArray);
 
-                        for (var i = 0; i < markersArray.length; i++) {
-                            markersArray[i].setMap(null);
-                        }
-                        markersArray = [];
-                        console.log("from delete markers function");
-                        console.log(markersArray);
-                    }
+        for (var i = 0; i < markersArray.length; i++) {
+            markersArray[i].setMap(null);
+        }
+        markersArray = [];
+        console.log("from delete markers function");
+        console.log(markersArray);
+    }
+
     function geocodeAddress(geocoder, resultsMap) {
 
         //       var address = document.getElementById('autocomplete');
@@ -381,6 +449,7 @@ console.log($scope.rate);
         //var places = new google.maps.places.Autocomplete(document.getElementById('txtPlaces'));
         google.maps.event.addListener(places, 'place_changed', function() {
             alert("hey there");
+            $scope.check=false;
             var place = places.getPlace();
 
             console.log(place);
@@ -404,11 +473,17 @@ console.log($scope.rate);
     }
 
 
-   $scope.myname = function(event) {
-gettariff();
-$scope.carselected=event.target.id;
-   
-   }
+    $scope.myname = function(event) {
+        gettariff();
+         $scope.carselected = event.target.id;
+           console.log($scope.Tariff);
+           $scope.check=true;
+//        if(event.target.id!=$scope.Tariff.carType){
+// alert("tariff for this car is not defined");
+ 
+
+//     }
+}
 
     $scope.initAutocomplete = function() {
         autocomplete = new google.maps.places.Autocomplete(
@@ -422,6 +497,8 @@ $scope.carselected=event.target.id;
 
 
     }
+
+  
 
     $scope.initAutocompletea = function() {
 
@@ -437,20 +514,21 @@ $scope.carselected=event.target.id;
     }
 
     function getTimeStamp() {
-//        var now = new Date();
-//        return (now.getHours() + ':'+ ((now.getMinutes() < 10) ? ("0" + now.getMinutes()) : (now.getMinutes())));
-// }
-var dt = new Date();
-    var h =  dt.getHours(), m = dt.getMinutes();
-    a= m<10?("0" + m) : (m);
-    return((h > 12) ? (h-12 + ':' + a +' PM') : (h + ':' + a +' AM'));
-    
+        //        var now = new Date();
+        //        return (now.getHours() + ':'+ ((now.getMinutes() < 10) ? ("0" + now.getMinutes()) : (now.getMinutes())));
+        // }
+        var dt = new Date();
+        var h = dt.getHours(),
+            m = dt.getMinutes();
+        a = m < 10 ? ("0" + m) : (m);
+        return ((h > 12) ? (h - 12 + ':' + a + ' PM') : (h + ':' + a + ' AM'));
 
-}
 
-// function setTime() {
-//     document.getElementById('cost').value = getTimeStamp();
-// }
+    }
+
+    // function setTime() {
+    //     document.getElementById('cost').value = getTimeStamp();
+    // }
 
     function fillInAddress() {
         //console.log("triggered");
@@ -460,18 +538,21 @@ var dt = new Date();
     }
 
 
-    var gettariff=function(){ 
-        $http.get('/tariff/getTariff').then(function(response) {
-            for(let x in response.data){
+    var gettariff = function() {
 
-           if($scope.carselected==response.data[x].carType){
-            console.log($scope.carselected+"is same as "+response.data[x].carType);
-            $scope.Tariff = response.data[x];
-            //$scope.Tariffet = response.data[x];
-        }
-        }
+        $http.get('/tariff/getTariff').then(function(response) {
+            for (let x in response.data) {
+                if ($scope.carselected == response.data[x].carType) {
+                    console.log($scope.carselected + "is same as " + response.data[x].carType);
+                    $scope.Tariff = response.data[x];
+                    //$scope.Tariffet = response.data[x];
+                }
+
+            }
         });
-}
+    }
+
+
 
     $scope.changepickup = function() {
 
@@ -501,7 +582,7 @@ var dt = new Date();
                     // infowindow.setContent(results[0].formatted_address);
                     //infowindow.open(map, marker);
                     document.getElementById("pickup").value = results[0].formatted_address;
-                    document.getElementById("pickup").text =  latlng.lat + "," + latlng.lng;
+                    document.getElementById("pickup").text = latlng.lat + "," + latlng.lng;
                     //document.getElementById('pickup').innerHTML="hi";
                     //$scope.pickupLocation=results[0].formatted_address;
                     console.log($scope.pickupLocation);
@@ -521,7 +602,8 @@ var dt = new Date();
                     autocomplete.addListener('place_changed', function() {
                         //infowindow.close();
                         // marker.setVisible(false);
-                    deleteMarkers(markersArray);
+                        $scope.check=false;
+                        deleteMarkers(markersArray);
                         var marker = new google.maps.Marker({
                             draggable: true,
                             map: map,
@@ -558,12 +640,12 @@ var dt = new Date();
                             ].join(' ');
                         }
 
-                
-                document.getElementById("pickup").text =address;
-                if(!document.getElementById("autocomplete").value==""){
-                    console.log("not null");
-                $scope.ridenow();
-            }
+
+                        document.getElementById("pickup").text = address;
+                        if (!document.getElementById("autocomplete").value == "") {
+                            console.log("not null");
+                            $scope.ridenow();
+                        }
                         // infowindowContent.children['place-icon'].src = place.icon;
                         // infowindowContent.children['place-name'].textContent = place.name;
                         // infowindowContent.children['place-address'].textContent = address;
@@ -605,5 +687,6 @@ var dt = new Date();
 
 
     }
-gettariff();
+    
+ gettariff(); 
 });

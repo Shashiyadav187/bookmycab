@@ -8,6 +8,7 @@ var io = require('socket.io').listen(server);
 
 var routes = require('./server/routes/driverroutes.js');
 var tariffroutes = require('./server/routes/tariffroute.js');
+var rideroutes= require('./server/routes/ridehistory.js');
 var userrouter = require('./server/routes/userRoute.js');
 var bodyParser = require('body-parser');
 var path = require('path');
@@ -25,12 +26,15 @@ app.use(logger('dev'));
 
 mongoose.connect('mongodb://localhost/bookmycab-db');
 
+app.use('/rides',rideroutes);
+app.use('/driver',rideroutes);
 app.use('/driver',userrouter);
 app.use('/login',userrouter);
 app.use('/register',userrouter);
  app.use('/driver',routes);
 app.use('/tariff',tariffroutes);
 app.use('/api', userrouter);
+app.use('/changepass',userrouter);
 
 app.use(function(req,res){
 	res.sendFile(__dirname +'/client/index.html')
@@ -43,9 +47,11 @@ io.on('connection', function(socket) {
       position: socket.position,
     });
     socket.on('SendLocation', function(data) {
+         console.log("dirver in server");
         console.log(data.position);
         socket.broadcast.emit('SendtoAll', {
-            location: data.position
+            location: data.position,
+            drimob:data.drivermobile
         });
     });
     socket.on('disconnect', function(){
@@ -60,7 +66,8 @@ io.on('connection', function(socket) {
             console.log("hi socket connected")
     console.log(data.hi);
         socket.broadcast.emit('check', {
-            dridet:data.hi
+            dridet:data.hi,
+            status:data.status
             
         });
     });
@@ -77,17 +84,7 @@ io.on('connection', function(socket) {
 
 });
 
- // socket.on('disconnect', function () {
- //    if (addedUser) {
- //      --numUsers;
 
- //      // echo globally that this client has left
- //      socket.broadcast.emit('user left', {
- //        username: socket.username,
- //        numUsers: numUsers
- //      });
- //    }
- //  });
 
 
 

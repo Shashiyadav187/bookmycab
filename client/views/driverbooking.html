@@ -2,8 +2,11 @@
 	<div class="row">
 		<div class="col-md-6">
 <div class="form-group">
-  <input type="text" style="text-align: center;" class="form-control" value="show current booking" disabled="true"></div> </div> 
-			<div class="col-md-6">
+  {{bookedcab}}
+   <button type="button" class="btn btn-secondary" data-target="drivermodal" data-toggle="modal" ng-show="bookedcab" >show current booking</button>
+  
+ </div> 
+			<div class="col-md-12">
 		<div style="height: 400px;width: 100%;" ng-init="initMap()" id="map"></div>
 
 		<div class="modal fade" id="drivermodal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -19,9 +22,10 @@
                 <div class="well">
                   <!--  <img  width="100" height="100" src="../public/uploads/{{booked.driverpic}}" /> -->
                    <hr>
-                 <!--   <div><strong>Name</strong> :{{driname.name}}</div> -->
+                  <div id="cname"><strong> Customer Name:</strong> :{{driname.name}}</div><hr>
                    <div id="pick"><strong>Pickup From </strong>:{{blah}}</div><hr>
                    <div id="drop"><strong>Destination at </strong>:{{b.drop}}</div><hr>
+                   <div id="cnum"><strong>Destination at </strong>:{{b.drop}}</div><hr>
                    
                     <!-- <div><strong>Mobile Number </strong>:{{booked.mob}}</div> -->
                      <div id="fare"><strong>Fare </strong>:Rs {{booked.fare}}</div>

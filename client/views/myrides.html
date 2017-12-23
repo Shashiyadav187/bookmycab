@@ -1,0 +1,32 @@
+<div class="container">
+<div class="row">
+    <h2>My Rides</h2>
+        <div class="col-md-12">
+            <table class="table table-bordered">
+                <thead>
+                    <tr>
+                        <th>Pick Up</th>
+                        <th>Destination</th>
+                        <th>Booked Date</th>
+                        <th>Booked Time</th>
+                        <th>Distance</th>
+                        <th>Total fare</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="p in rideHistory">
+                   
+                        <td>{{p.pickup}}</td>
+                        <td>{{p.drop}}</td>
+                        <td>{{p.ridedate}}</td>
+                        <td>{{p.ridingtime}}</td>
+                         <td>{{p.distance}}</td>
+                        <td>{{p.totalfare}}</td>
+                        <td>{{p.status}}</td>
+                        
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
