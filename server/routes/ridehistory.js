@@ -7,6 +7,7 @@ rideroutes.post('/addRide',function(request,response){
 	console.log('hi');
 	var newRide = new history({
 	custmob:request.body.custmob,
+	drimob:request.body.drimob,
 	pickup:request.body.pickup,
 	drop:request.body.drop,
 	ridedate:request.body.ridedate,

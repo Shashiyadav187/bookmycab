@@ -1,6 +1,7 @@
 var mongoose=require('mongoose');
 var myrideSchema=mongoose.Schema({
 	custmob:String,
+	drimob:String,
 	pickup:String,
 	drop:String,
 	ridedate:String,

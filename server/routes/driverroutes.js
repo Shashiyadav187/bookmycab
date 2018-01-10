@@ -3,6 +3,9 @@ var router=express.Router();
 var cab= require('../models/cabmodel.js');
 var multer=require('multer');
 var filename="";
+var time=Date.now();
+var t=time.toString();
+var res = t.slice(1, 12);
 
 
 var storage=multer.diskStorage({
@@ -11,8 +14,9 @@ var storage=multer.diskStorage({
     },
     filename:function(request,file,cb){
         var timenw=Date.now();
-        cb(null,file.fieldname + '-' + Date.now()+".jpg");
-        filename=file.fieldname + '-' + Date.now()+".jpg";
+        console.log(timenw);
+        cb(null,file.fieldname + '-' + res+".jpg");
+        filename=file.fieldname + '-' + res+".jpg";
     }
 
 }) 

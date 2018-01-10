@@ -7,6 +7,7 @@ var jwt=require('jsonwebtoken');
 
 
 userrouter.post('/addUser',function(request,response){
+    console.log(request.body);
 	var newUser = new user({
 	role:'driver',
 	password:bcrypt.hashSync(request.body.mobile),
@@ -20,11 +21,33 @@ console.log(newUser);
         if (error) {
             throw error;
         } else {
-           console.log("The User details are added successfully");
+           console.log("The driver details are added successfully");
             response.end();
         }
 	
 	});
+});
+
+
+userrouter.post('/addregisterUser',function(request,response){
+    var newUser = new user({
+    role:'user',
+    password:bcrypt.hashSync(request.body.password),
+    firstName:request.body.firstName,
+    lastName:request.body.lastName,
+    mobileNum:request.body.mobile,
+    EmailID:request.body.email
+    });
+console.log(newUser);
+    newUser.save(function(error, data) {
+        if (error) {
+            throw error;
+        } else {
+           console.log("The User details are added successfully");
+            response.end();
+        }
+    
+    });
 });
 userrouter.post('/Login',function(request,response){
     console.log("in here");
@@ -110,26 +133,7 @@ userrouter.post('/checkPass',function(request,response){
 });
 
 
-userrouter.post('/addregisterUser',function(request,response){
-    var newUser = new user({
-    role:'user',
-    password:bcrypt.hashSync(request.body.password),
-    firstName:request.body.firstName,
-    lastName:request.body.lastName,
-    mobileNum:request.body.mobile,
-    EmailID:request.body.email
-    });
-console.log(newUser);
-    newUser.save(function(error, data) {
-        if (error) {
-            throw error;
-        } else {
-           console.log("The User details are added successfully");
-            response.end();
-        }
-    
-    });
-});
+
 
 userrouter.get('/getUser', function(request, response) {
     user.find({}, function(error, data) {

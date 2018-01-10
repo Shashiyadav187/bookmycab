@@ -20,6 +20,7 @@ $http.post('/api/checkPass',$scope.mydata).then(function(response) {
         $http.put('/api/updatePass/' + $scope.updateUserDetails._id,$scope.mydata.password).then(function(response) {
             console.log('Data Updated');
         });
+        $scope.Pass="";
     }else {
     	alert("Enter correct password to change password");
     }

@@ -2,8 +2,26 @@ angular.module('mycabApp').controller('DriverController', function($scope, $root
     $scope.flag=0;
 
        $scope.AddCab = function(file) {
-       
+        console.log($scope.newDriver);
+        var imgsrc=document.getElementById("blah").src;
+        if(imgsrc=="http://localhost:3000/"||file==undefined){
+            
+           alert("Please add the drivers photo ");
+        }
+        else if($scope.newDriver==undefined){
+            alert("Please enter all the details required");
+        }
+        else{
+   for(let x in $scope.user){
+            if($scope.user[x].mobileNum==$scope.newDriver.mobile||$scope.user[x].EmailID==$scope.newDriver.email){
+                $scope.flag=0;
+                break;
+            }else{
+                 $scope.flag=1;
+            }
+        }
         console.log(file);
+        if($scope.flag==1){
         Upload.upload({
             url:'http://localhost:3000/driver/imageupload',
             data:{
@@ -16,25 +34,19 @@ angular.module('mycabApp').controller('DriverController', function($scope, $root
                 console.log("problem in upload");
             }
         });
-        for(let x in $scope.user){
-            if($scope.user[x].mobileNum==$scope.newDriver.mobile||$scope.user[x].EmailID==$scope.newDriver.email){
-                $scope.flag=0;
-                break;
-            }else{
-                 $scope.flag=1;
-            }
-        }
+    
         console.log("flag value"+$scope.flag);
-if($scope.flag==1){
+
 
        $http.post('/driver/addCab', $scope.newDriver).then(function(response) {
             console.log('Data Saved Successfully');
             alert('data for driver saved is Saved Successfully');
 
-            $http.post('/driver/addUser', $scope.newDriver).then(function(response) {
+        });
+
+    $http.post('/driver/addUser', $scope.newDriver).then(function(response) {
             console.log('Data Saved Successfully');
             alert('data for cab saved is Saved Successfully');
-        });
         });
 
 
@@ -43,6 +55,12 @@ if($scope.flag==1){
         alert("User already registered");
       }
       $scope.newDriver="";
+      file="";
+
+      
+  }
+ 
+        
 
         GetCab();
     }
@@ -175,10 +193,11 @@ for(let x in $scope.user){
     $scope.deleteUser = function(Driver) {
         $http.delete('/driver/deleteUser/' + Driver.mobileNum).then(function(response) {
             console.log('Driver Removed Successfully');
+       
+    });
         $http.delete('/driver/deleteCab/' + Driver.mobileNum).then(function(response) {
             console.log('cab details Removed Successfully');
         });
-    });
         GetCab();
     }
 

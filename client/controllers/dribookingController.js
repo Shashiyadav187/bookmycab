@@ -1,7 +1,7 @@
 angular.module('mycabApp').controller('dribookingController', function($scope,$http,$filter,$cookies) {
 var drivercar=[];
 $scope.b="";
-//$scope.bookedcab=false;
+$scope.bookedcab=false;
 var socket = io();
     $scope.initMap = function() {
     	
@@ -133,6 +133,7 @@ google.maps.event.addListener(marker, 'dragend', function(event) {
 
 
     socket.on('check', function(data) {
+        $scope.det=data.dridet;
     console.log(data.status);
     if(data.status==true){
       $scope.bookedcab=true;  
@@ -152,6 +153,18 @@ console.log($scope.bookedcab);
     });
             //$('#messagePanel').append(data.dridet + '<br/><br/>');
         });
+
+    $scope.hi=function(){
+        //$scope.bookedcab=true; 
+        if(!document.getElementById("pick").innerHTML==""&&$scope.det!=undefined){
+            $("#drivermodal").modal();
+
+        }
+        else{
+            alert("no Current booking");
+        }
+
+    }
     
 });
 

@@ -17,7 +17,7 @@
       <li class="nav-item" >
       <a  class="nav-link"  ng-show="!ifnotlogged()&&isUser()" href='/rides'>My Rides</a></li>
       <li class="nav-item" >
-      <a  class="nav-link"  ng-show="!ifnotlogged()&&isUser()" href='/rides'>My Bookings</a></li>
+      <a  class="nav-link"  ng-show="!ifnotlogged()&&isDriver()" href='/rides'>My Bookings</a></li>
       <li class="nav-item">
         <a class="nav-link"   ng-hide="isLoggedin" href="/login">Login</a></li>
          <li class="nav-item" >
@@ -34,7 +34,7 @@
     </ul>
     <ul class="nav navbar-nav navbar-right">
        <li class="nav-item">
-        <a class="nav-link" ng-show="isLoggedin" href="/changepass">Change Password</a>
+        <a class="nav-link" ng-show="isLoggedin&&!isAdmin()" href="/changepass">Change Password</a>
       </li> 
        <li class="nav-item">
         <a class="nav-link" ng-show="isLoggedin" href="#" ng-click="logout()">Logout</a>

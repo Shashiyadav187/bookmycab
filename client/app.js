@@ -47,7 +47,7 @@ app.config(function($routeProvider,$locationProvider) {
             var public=['/','/login','/register'];
             var admin=['/tariff','/driver','/','/login','/register'];
             var customer=['/book','/','/login','/rides','/register','/changepass'];
-            var driver=['/dripage','/','/login','/register','/changepass'];
+            var driver=['/dripage','/','/login','/register','/changepass','/rides'];
             var user=$cookies.getObject('mycookie');
 
            
